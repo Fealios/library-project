@@ -47,6 +47,21 @@ namespace LibraryApp
             Assert.Equal(allAuthors, tempBook.GetAuthors());
         }
 
+        [Fact]
+        public void TEST_DeleteSingle_DeleteSingleBookFromExistence()
+        {
+            Book tempBook = new Book("Playboy Magazine");
+            tempBook.Save();
+            Book tempBook2 = new Book("Hustler Magazine");
+            tempBook2.Save();
+            Author hefner = new Author("hefner");
+            hefner.Save();
+            tempBook.AddAuthor(hefner);
+            tempBook.DeleteSingle();
+            List<Book> testList = new List<Book>{tempBook2};
+            Assert.Equal(testList, Book.GetAll());
+        }
+
         public void Dispose()
         {
             Book.DeleteAll();
