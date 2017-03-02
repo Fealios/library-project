@@ -1,0 +1,39 @@
+@{
+    Layout = "Shared/_Layout.cshtml";
+}
+
+<div class="form-holder">
+    <form action="/books" method="post">
+        <label>Book Title:</label>
+        <input type="text" name="title">
+        <br>
+        <label>Author Name:</label>
+        <input type="text" name="author" placeholder="Separate multiple authors by a comma">
+        <button type="submit" class="btn">submit</button>
+    </form>
+</div>
+
+
+<ul class="collapsible" data-collapsible="accordion">
+    @foreach(var book in Model)
+    {
+        <li>
+            <div class="collapsible-header"><i class="material-icons">library_books</i>@book.GetTitle()
+            </div>
+            <div class="collapsible-body">
+                <a href="/delete-single-book/@book.GetId()" class="btn red">Delete this book? </a>
+                <ul>
+                </br>
+                    <div class="author-holder">
+                    <h5> Author(s): </h5>
+                    @foreach(var author in @book.GetAuthors())
+                    {
+                        <a href="/single-author/@author.GetId()"><li>@author.GetName()</li> </a>
+                    }
+                    </div>
+                </ul>
+            </div>
+        </li>
+    }
+
+</ul>

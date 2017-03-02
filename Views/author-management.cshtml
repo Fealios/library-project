@@ -1,0 +1,28 @@
+@{
+    Layout = "Shared/_Layout.cshtml";
+}
+
+<ul class="collapsible" data-collapsible="accordion">
+    @foreach(var author in Model)
+    {
+        <li>
+            <div class="collapsible-header"><i class="material-icons">library_books</i>@author.GetName()
+            </div>
+            <div class="collapsible-body">
+                <a href="/delete-single-author/@author.GetId()" class="btn red">Delete this author? </a>
+                <ul>
+                </br>
+                    <div class="book-holder">
+                    <h5> Book(s): </h5>
+                    <ul>
+                        @foreach(var book in @author.GetBooks())
+                        {
+                            <a href="/single-book/@book.GetId()"><li>@book.GetTitle()</li> </a>
+                        }
+                    </div>
+                </ul>
+            </div>
+        </li>
+    }
+
+</ul>

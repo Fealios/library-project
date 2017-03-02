@@ -35,9 +35,8 @@ namespace LibraryApp
             testPatron.CheckoutCopy(testCopy);
             List<Checkout> checkoutList = testPatron.GetCheckouts();
             // Console.WriteLine(checkoutList[0].GetDueDate());
-            Assert.Equal("3/15/2017 12:00:00 AM", checkoutList[0].GetDueDate());
+            Assert.Equal("3/16/2017 12:00:00 AM", checkoutList[0].GetDueDate());
         }
-
 
         public void Dispose()
         {

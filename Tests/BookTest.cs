@@ -67,8 +67,8 @@ namespace LibraryApp
         {
             Book tempBook = new Book("harry potter");
             tempBook.Save();
-            Copy tempCopy = new Copy("harry potter", 0);
-            Copy checkedOutCopy = new Copy("harry potter", 1);
+            Copy tempCopy = new Copy("harry potter", 20);
+            Copy checkedOutCopy = new Copy("harry potter", 21, true);
             tempCopy.Save();
             checkedOutCopy.Save();
             tempCopy.AddBookCopy(tempBook);
