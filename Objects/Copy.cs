@@ -218,6 +218,32 @@ namespace LibraryApp.Objects
             }
         }
 
+        // public bool CheckAvailabe()
+        // {
+        //     SqlConnection conn = DB.Connection();
+        //     conn.Open();
+        //
+        //     SqlCommand cmd = new SqlCommand("SELECT * FROM copies WHERE id = @CopyId");
+        //     // List<Copy> instockCopies = new List<Copy> {};
+        //
+        //     SqlParameter copyId = new SqlParameter("@CopyId", this.GetId());
+        //
+        //     cmd.Parameters.Add(copyId);
+        //     SqlDataReader rdr = cmd.ExecuteReader();
+        //
+        //     while(rdr.Read())
+        //     {
+        //         if(rdr.GetByte(2) == 0)
+        //         {
+        //             return true;
+        //         }
+        //         else
+        //         {
+        //             return false;
+        //         }
+        //     }
+        // }
+
         //delete all copies from copies table
         public static void DeleteAll()
         {

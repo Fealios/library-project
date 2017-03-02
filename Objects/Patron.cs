@@ -8,7 +8,7 @@ namespace LibraryApp.Objects
     {
         private int _id;
         private string _name;
-        private string _duedate;
+        // private string _duedate;
 
         public Patron(string name, int id = 0)
         {
@@ -26,10 +26,10 @@ namespace LibraryApp.Objects
             return _name;
         }
 
-        public string GetDueDate()
-        {
-            return _duedate;
-        }
+        // public string GetDueDate()
+        // {
+        //     return _duedate;
+        // }
 
 
         public override bool Equals(System.Object otherPatron)
@@ -46,6 +46,42 @@ namespace LibraryApp.Objects
 
                 return (idEquality && nameEquality);
             }
+        }
+
+        public List<Checkout> GetCheckouts()
+        {
+            SqlConnection conn = DB.Connection();
+            conn.Open();
+
+            SqlCommand cmd = new SqlCommand("SELECT * FROM checkouts WHERE patron_id = @PatronId", conn);
+
+            SqlParameter patronIdParameter = new SqlParameter("@PatronId", this.GetId());
+            cmd.Parameters.Add(patronIdParameter);
+            SqlDataReader rdr = cmd.ExecuteReader();
+
+            List<Checkout> checkoutList = new List<Checkout>{};
+
+            while (rdr.Read())
+            {
+                int id = rdr.GetInt32(0);
+                int patronId = rdr.GetInt32(1);
+                int copyId = rdr.GetInt32(2);
+                string dueDate = rdr.GetDateTime(3).ToString();
+                Checkout foundCheckout = new Checkout(patronId, copyId, dueDate, id);
+                checkoutList.Add(foundCheckout);
+            }
+
+            if (rdr != null)
+            {
+                rdr.Close();
+            }
+            if (conn != null)
+            {
+                conn.Close();
+            }
+
+            return checkoutList;
+
         }
 
         //get list of all Patrons
@@ -107,23 +143,28 @@ namespace LibraryApp.Objects
             }
         }
 
-        public void AddCopy(Copy tempCopy)
+        public void CheckoutCopy(Copy tempCopy)
         {
             SqlConnection conn = DB.Connection();
             conn.Open();
 
-            SqlCommand cmd = new SqlCommand("INSERT INTO partrons_copies(partron_id, copy_id, due_date) VALUES(@PatronId, @CopyId, @DueDate);", conn)
+            SqlCommand cmd = new SqlCommand("INSERT INTO checkouts(patron_id, copy_id) VALUES(@PatronId, @CopyId);", conn);
+            SqlCommand incrementTime = new SqlCommand("UPDATE checkouts SET due_date = DATEADD(day,14,due_date) WHERE patron_id = @Patron;",conn);
 
+            SqlParameter PatronId = new SqlParameter("@Patron", this.GetId());
             SqlParameter patronid = new SqlParameter("@PatronId", this.GetId());
             SqlParameter copyid = new SqlParameter("@CopyId", tempCopy.GetId());
-            SqlParameter duedate = new SqlParameter("@DueDate", this.GetDueDate());
+
+
+            // SqlParameter duedate = new SqlParameter("@DueDate", this.GetDueDate());
 
             cmd.Parameters.Add(patronid);
             cmd.Parameters.Add(copyid);
-            cmd.Parameters.Add(duedate);
+            incrementTime.Parameters.Add(PatronId);
+            // cmd.Parameters.Add(duedate);
 
             cmd.ExecuteNonQuery();
-
+            incrementTime.ExecuteNonQuery();
             if(conn != null)
             {
                 conn.Close();
@@ -147,7 +188,7 @@ namespace LibraryApp.Objects
         {
             SqlConnection conn = DB.Connection();
             conn.Open();
-            SqlCommand cmd = new SqlCommand("DELETE FROM patrons_copies;", conn);
+            SqlCommand cmd = new SqlCommand("DELETE FROM checkouts;", conn);
             cmd.ExecuteNonQuery();
             conn.Close();
         }
@@ -158,7 +199,7 @@ namespace LibraryApp.Objects
             SqlConnection conn = DB.Connection();
             conn.Open();
 
-            SqlCommand cmd = new SqlCommand("DELETE FROM books WHERE id = @BookId; DELETE FROM patrons_copies WHERE book_id = @PatronId", conn);
+            SqlCommand cmd = new SqlCommand("DELETE FROM books WHERE id = @BookId; DELETE FROM checkouts WHERE book_id = @PatronId", conn);
 
             SqlParameter idParameter = new SqlParameter("@PatronId", this.GetId());
             cmd.Parameters.Add(idParameter);

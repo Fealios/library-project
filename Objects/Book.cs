@@ -187,6 +187,39 @@ namespace LibraryApp.Objects
             }
         }
 
+        public List<Copy> CheckAvailabe()
+        {
+            SqlConnection conn = DB.Connection();
+            conn.Open();
+
+            SqlCommand cmd = new SqlCommand("SELECT copies.* FROM books JOIN books_copies ON (books.id = books_copies.book_id) JOIN copies ON (books_copies.copy_id = copies.id) WHERE copies.checkout = 0;", conn);
+
+            SqlParameter copyId = new SqlParameter("@CopyId", this.GetId());
+
+            cmd.Parameters.Add(copyId);
+            SqlDataReader rdr = cmd.ExecuteReader();
+
+            List<Copy> listOfAvailable = new List<Copy>{};
+            while(rdr.Read())
+            {
+                int id = rdr.GetInt32(0);
+                string bookname = rdr.GetString(1);
+                Copy availableCopy = new Copy(bookname, id);
+                listOfAvailable.Add(availableCopy);
+            }
+
+            if (rdr != null)
+            {
+                rdr.Close();
+            }
+            if (conn != null)
+            {
+                conn.Close();
+            }
+
+            return listOfAvailable;
+        }
+
         public static void DeleteAll()
         {
             SqlConnection conn = DB.Connection();

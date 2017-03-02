@@ -62,9 +62,26 @@ namespace LibraryApp
             Assert.Equal(testList, Book.GetAll());
         }
 
+        [Fact]
+        public void TEST_CheckAvailable_CheckIfSingleCopyExists()
+        {
+            Book tempBook = new Book("harry potter");
+            tempBook.Save();
+            Copy tempCopy = new Copy("harry potter", 0);
+            Copy checkedOutCopy = new Copy("harry potter", 1);
+            tempCopy.Save();
+            checkedOutCopy.Save();
+            tempCopy.AddBookCopy(tempBook);
+            checkedOutCopy.AddBookCopy(tempBook);
+            List<Copy> listOfAvailableCopies = new List<Copy>{tempCopy};
+            Assert.Equal(listOfAvailableCopies, tempBook.CheckAvailabe());
+        }
+
         public void Dispose()
         {
             Book.DeleteAll();
+            Copy.DeleteAll();
+            Copy.BC_DeleteAll();
             Book.BA_DeleteAll();
             Author.DeleteAll();
         }

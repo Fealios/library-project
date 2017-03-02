@@ -25,6 +25,19 @@ namespace LibraryApp
             Assert.Equal(tempList, Patron.GetAll());
         }
 
+        [Fact]
+        public void TEST_GetCheckouts_GetListOfCheckouts()
+        {
+            Patron testPatron = new Patron("Alex");
+            testPatron.Save();
+            Copy testCopy = new Copy("Melvin Goes to the zoo");
+            testCopy.Save();
+            testPatron.CheckoutCopy(testCopy);
+            List<Checkout> checkoutList = testPatron.GetCheckouts();
+            // Console.WriteLine(checkoutList[0].GetDueDate());
+            Assert.Equal("3/15/2017 12:00:00 AM", checkoutList[0].GetDueDate());
+        }
+
 
         public void Dispose()
         {
