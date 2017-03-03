@@ -40,6 +40,14 @@ namespace LibraryApp.Objects
             return _due_date;
         }
 
+        public static Checkout FindCheckedOut(int)
+        {
+            SqlConnection conn = DB.Connection();
+            conn.Open();
+
+            SqlCommand cmd = new SqlCommand("SELECT copies.* FROM copies JOIN checkouts ON (checkouts.copy_id = copies.id) WHERE copies.checkout = 1;", conn);
+        }
+
         public static List<Checkout> GetOverDue()
         {
             SqlConnection conn = DB.Connection();

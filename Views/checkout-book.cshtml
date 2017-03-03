@@ -1,0 +1,21 @@
+@{
+    Layout = "Shared/_Layout.cshtml";
+}
+
+@if(Model.CheckAvailabe().Count > 0)
+{
+    <h3>There are @Model.CheckAvailabe().Count copies available</h3>
+    <form action="/confirm-checkout/@Model.CheckAvailabe()[0].GetId()" method="post">
+        <label>Your name:</label>
+        <input type="text" name="patron">
+        <input type="hidden" name="book-id" value="@Model.GetId()">
+        <label>Would you like to checkout this book?</label>
+        <button type="submit" class="btn">Yes</button> <a href="/books" class="btn"> No </a>
+    </form>
+
+}
+else
+{
+    <h3>There are no copies available</h3>
+    <a href="/books" class="btn">Home</a>
+}

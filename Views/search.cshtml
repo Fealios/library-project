@@ -1,0 +1,28 @@
+@{
+    Layout = "Shared/_Layout.cshtml";
+}
+
+<div class="row">
+    <form class="col s12" action="/search" method="get">
+        <div class="input-field col s12">
+            <input type='text'
+            placeholder='Author or Book'
+            class='flexdatalist'
+            data-min-length='1'
+            list='authors-books'
+            name='author-or-book'>
+        </div>
+        <button type="submit" name="button" class="btn">Search</button>
+    </form>
+</div>
+
+<datalist id="authors-books">
+    @foreach(var book in Model)
+    {
+        <a href="/single-book/@book.GetId()"><option value="localhost:5004/single-book/@book.GetId()">@book.GetTitle()</option></a>
+        @foreach(var author in @book.GetAuthors())
+        {
+            <a href="/single-author/@author.GetId()"><option value="localhost:5004/single-author/@author.GetId()">@author.GetName()</option></a>
+        }
+    }
+</datalist>

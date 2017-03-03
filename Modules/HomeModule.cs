@@ -53,8 +53,36 @@ namespace LibraryApp
                     newBook.AddAuthor(newAuthor);
                 }
             }
+            for (int i = 0; i < Int32.Parse(Request.Form["copies"]); i++) {
+                Copy newCopy = new Copy(newBook.GetTitle());
+                newCopy.Save();
+                newCopy.AddBookCopy(newBook);
+            }
             return View["book-management.cshtml", Book.GetAll()];
         };
+
+        Get["/confirm-checkout/{id}"]=parameter=> {
+            Copy tempCopy = Copy.Find(parameter.id);
+            Patron newPatron = new Patron(Request.Form["patron"]);
+        }
+
+        // Post["/confirm-checkout/{id}"] =parameter=> {
+        //     Copy foundCopy = Copy.Find(parameter.id);
+        //     if(Patron.CheckIfPatronExists(Request.Form["patron"]))
+        //     {
+        //         Patron foundPatron = Patron.FindByName(Request.Form["patron"]);
+        //         foundPatron.CheckoutCopy(foundCopy);
+        //
+        //     }
+        //     else
+        //     {
+        //         Patron newPatron = new Patron(Request.Form["patron"]);
+        //         newPatron.Save();
+        //         newPatron.CheckoutCopy(foundCopy);
+        //     }
+        //     Checkout foundCheckout = new Checkout()
+        //     return View["checked-out.cshtml", ]
+        // }
 
         Get["/delete-single-book/{id}"] = parameter => {
             Book tempBook = Book.Find(parameter.id);
@@ -67,6 +95,11 @@ namespace LibraryApp
             return View["book-management.cshtml", Book.GetAll()];
         };
 
+        Get["/checkout-book/{id}"]=parameter=> {
+            Book tempBook = Book.Find(parameter.id);
+            return View["checkout-book.cshtml", tempBook];
+        };
+
         Get["/authors"] = _ =>
         {
             Console.WriteLine("author page navigation");
@@ -77,6 +110,11 @@ namespace LibraryApp
             Author tempAuthor = Author.Find(parameter.id);
             return View["single-author.cshtml", tempAuthor];
         };
+
+        Get["/search"] =_=> {
+            return View["search.cshtml", Book.GetAll()];
+        };
+
     }
   }
 }

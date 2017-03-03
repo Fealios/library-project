@@ -143,6 +143,37 @@ namespace LibraryApp.Objects
             }
         }
 
+        public static Patron FindByName(string name)
+        {
+            SqlConnection conn = DB.Connection();
+            conn.Open();
+
+            SqlCommand cmd = new SqlCommand("SELECT * FROM patrons WHERE name = @PatronName;", conn);
+            SqlParameter patronNameParameter = new SqlParameter("@PatronName", name);
+            cmd.Parameters.Add(patronNameParameter);
+            SqlDataReader rdr = cmd.ExecuteReader();
+
+            int foundPatronId = 0;
+            string foundPatronName = null;
+
+            while (rdr.Read())
+            {
+                foundPatronId = rdr.GetInt32(0);
+                foundPatronName = rdr.GetString(1);
+            }
+            Patron foundPatron = new Patron(foundPatronName, foundPatronId);
+
+            if (rdr != null)
+            {
+                rdr.Close();
+            }
+            if (conn != null)
+            {
+                conn.Close();
+            }
+            return foundPatron;
+        }
+
         public void CheckoutCopy(Copy tempCopy)
         {
             SqlConnection conn = DB.Connection();
@@ -169,6 +200,38 @@ namespace LibraryApp.Objects
             {
                 conn.Close();
             }
+        }
+
+        public static bool CheckIfPatronExists(string name)
+        {
+            SqlConnection conn = DB.Connection();
+            conn.Open();
+
+            bool check = false;
+
+            SqlCommand cmd = new SqlCommand("SELECT * FROM patron WHERE name = @Name;", conn);
+            SqlParameter patronNameParameter = new SqlParameter();
+            patronNameParameter.ParameterName = "@Name";
+            patronNameParameter.Value = name;
+            cmd.Parameters.Add(patronNameParameter);
+            SqlDataReader rdr = cmd.ExecuteReader();
+
+
+            while (rdr.Read())
+            {
+                check = true;
+            }
+
+            if (rdr != null)
+            {
+                rdr.Close();
+            }
+            if (conn != null)
+            {
+                conn.Close();
+            }
+
+            return check;
         }
 
         //======= various delete functions =====================
